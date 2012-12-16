@@ -32,7 +32,9 @@ database and other performance problems.
 '''
     def documentation = "http://grails.org/plugin/miniprofiler"
 
+    def license = 'APACHE'
     def scm = [url: 'https://github.com/tomdcc/grails-miniprofiler']
+    def issueManagement = [system: 'Github', url: 'https://github.com/tomdcc/grails-miniprofiler/issues']
 
     // place right on the outside
     def getWebXmlFilterOrder() {
