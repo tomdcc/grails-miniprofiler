@@ -1,9 +1,10 @@
 package com.energizedwork.miniprofiler
 
 import grails.converters.JSON
-import net.sf.ehcache.Element
 
 import javax.servlet.http.HttpServletResponse
+
+import net.sf.ehcache.Element
 
 class ProfilerDataController {
 
@@ -14,6 +15,7 @@ class ProfilerDataController {
         Element profilerElement = profilingCache.get(params.id)
         if(!profilerElement || profilerElement.expired) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND)
+            return
         }
         def profiler = profilerElement.value
         render (profiler.toJSON() as JSON)

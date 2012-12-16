@@ -4,16 +4,18 @@ import grails.util.GrailsUtil
 
 class MiniProfiler implements Serializable {
 
+    private static final long serialVersionUID = 1
+
     UUID id
     String name
     Date started
     String machineName
     ProfileLevel level
-    Timing root;
+    Timing root
     boolean active
-    public String user
-    public boolean hasUserViewed
-    public boolean hasSqlTimings = false
+    String user
+    boolean hasUserViewed
+    boolean hasSqlTimings = false
 
     long getDurationMilliseconds() {
         root.durationMilliseconds ?: System.currentTimeMillis() - started.time
@@ -28,9 +30,9 @@ class MiniProfiler implements Serializable {
 //                    foreach (var t in GetTimingHierarchy())
 //                            {
 //                                if (t.IsTrivial)
-//                                    return true;
+//                                    return true
 //                            }
-//                    return false;
+//                    return false
 //                }
     }
 
@@ -43,33 +45,33 @@ class MiniProfiler implements Serializable {
 //                    foreach (var t in GetTimingHierarchy())
 //                            {
 //                                if (!t.IsTrivial)
-//                                    return false;
+//                                    return false
 //                            }
-//                    return true;
+//                    return true
 //                }
     }
 
     /// <summary>
-    /// Any Timing step with a duration less than or equal to this will be hidden by default in the UI; defaults to 2.0 ms.
+    /// Any Timing step with a duration less than or equal to this will be hidden by default in the UI defaults to 2.0 ms.
     /// </summary>
     int getTrivialDurationThresholdMilliseconds()
     {
-//        get { return Settings.TrivialDurationThresholdMilliseconds; }
+//        get { return Settings.TrivialDurationThresholdMilliseconds }
         2
     }
 
-    public Timing head
+    Timing head
 
     // TODO: pass in machine name to remove deprecated GrailsUtil reference?
     MiniProfiler(String url, ProfileLevel level) {
         id = UUID.randomUUID()
-        this.level = level;
-        this.machineName = GrailsUtil.environment + " on " + InetAddress.getLocalHost().getHostName();
+        this.level = level
+        this.machineName = GrailsUtil.environment + " on " + InetAddress.getLocalHost().getHostName()
         started = new Date()
 
         // stopwatch must start before any child Timings are instantiated
-//        _sw = Settings.StopwatchProvider();
-        root = new Timing(this, null, url);
+//        _sw = Settings.StopwatchProvider()
+        root = new Timing(this, null, url)
         head = root
     }
 
@@ -78,51 +80,49 @@ class MiniProfiler implements Serializable {
     }
 
     Timing step(String name, ProfileLevel level = ProfileLevel.Info) {
-        if (level > this.level) return null;
-        return new Timing(this, head, name);
+        if (level > this.level) return null
+        return new Timing(this, head, name)
     }
 
     // TODO duplicates
     void addSqlTiming(SqlTiming sqlTiming) {
-        if (head == null) return;
+        if (head == null) return
 
-        int count;
+        int count
 
-//        stats.IsDuplicate = _sqlExecutionCounts.TryGetValue(stats.CommandString, out count);
-//        _sqlExecutionCounts[stats.CommandString] = count + 1;
+//        stats.IsDuplicate = _sqlExecutionCounts.TryGetValue(stats.CommandString, out count)
+//        _sqlExecutionCounts[stats.CommandString] = count + 1
 
-        hasSqlTimings = true;
+        hasSqlTimings = true
 //        if (stats.IsDuplicate)
 //        {
-//            HasDuplicateSqlTimings = true;
+//            HasDuplicateSqlTimings = true
 //        }
 
-        head.addSqlTiming(sqlTiming);
+        head.addSqlTiming(sqlTiming)
 
     }
 
-    public long getDurationMillisecondsInSql()    {
+    long getDurationMillisecondsInSql()    {
         (long) getTimingHierarchy().sum { Timing t -> t.hasSqlTimings ? t.sqlTimings.sum{SqlTiming s -> s.durationMilliseconds} : 0}
     }
 
     // not as elegant or efficient as the c# yield code, so maybe shouldn't be used as much
-    public List <Timing> getTimingHierarchy() {
-        def result = new ArrayList<Timing>();
-        def stack = new Stack<Timing>();
-        stack.push(root);
+    List <Timing> getTimingHierarchy() {
+        def result = new ArrayList<Timing>()
+        def stack = new Stack<Timing>()
+        stack.push(root)
 
         while (stack.size() > 0) {
-            def timing = stack.pop();
+            def timing = stack.pop()
             result.add(timing)
-//        yield return timing;
+//        yield return timing
             if (timing.children) {
                 stack.addAll(timing.children)
             }
         }
         result
     }
-
-
 
     def toJSON() {
         [

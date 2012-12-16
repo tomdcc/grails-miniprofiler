@@ -11,28 +11,22 @@ public class ProfilingSpyLogDelegator implements SpyLogDelegator {
         this.profilerProvider = profilerProvider;
     }
 
-    @Override
     public boolean isJdbcLoggingEnabled() {
         return true;
     }
 
-    @Override
     public void exceptionOccured(Spy spy, String s, Exception e, String s2, long l) {
     }
 
-    @Override
     public void methodReturned(Spy spy, String s, String s2) {
     }
 
-    @Override
     public void constructorReturned(Spy spy, String s) {
     }
 
-    @Override
     public void sqlOccured(Spy spy, String s, String s2) {
     }
 
-    @Override
     public void sqlTimingOccured(Spy spy, long time, String method, String sql) {
         MiniProfiler profiler = profilerProvider.getCurrentProfiler();
         if(profiler != null) {
@@ -42,15 +36,12 @@ public class ProfilingSpyLogDelegator implements SpyLogDelegator {
         }
     }
 
-    @Override
     public void connectionOpened(Spy spy) {
     }
 
-    @Override
     public void connectionClosed(Spy spy) {
     }
 
-    @Override
     public void debug(String s) {
     }
 
