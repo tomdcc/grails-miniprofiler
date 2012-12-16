@@ -1,5 +1,5 @@
 package com.energizedwork.miniprofiler
 
-public enum ProfileLevel {
+enum ProfileLevel {
     Info, Verbose
 }

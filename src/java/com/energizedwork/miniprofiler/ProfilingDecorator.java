@@ -3,9 +3,6 @@ package com.energizedwork.miniprofiler;
 import com.opensymphony.sitemesh.Content;
 import com.opensymphony.sitemesh.Decorator;
 import com.opensymphony.sitemesh.SiteMeshContext;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 public class ProfilingDecorator implements Decorator {
 
@@ -17,7 +14,6 @@ public class ProfilingDecorator implements Decorator {
         this.miniProfiler = miniProfiler;
     }
 
-    @Override
     public void render(Content content, SiteMeshContext siteMeshContext) {
         Timing timing = miniProfiler.step("Layout");
         try {

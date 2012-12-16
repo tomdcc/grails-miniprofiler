@@ -14,6 +14,5 @@ class MiniprofilerUrlMappings {
                 plugin(matches:/miniprofiler-.*/)
             }
         }
-
     }
 }

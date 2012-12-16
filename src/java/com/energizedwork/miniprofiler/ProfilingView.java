@@ -8,12 +8,10 @@ import java.util.Map;
 
 public class ProfilingView implements View {
 
-    @Override
     public String getContentType() {
         return null;
     }
 
-    @Override
     public void render(Map<String, ?> stringMap, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
 
     }
