@@ -1,20 +1,20 @@
 package com.energizedwork.miniprofiler
 
-import com.linkedin.grails.profiler.ProfilerAppender
-import com.linkedin.grails.profiler.ProfilerFilter
-import com.linkedin.grails.profiler.ProfilerHandlerInterceptor
 import org.codehaus.groovy.grails.commons.GrailsApplication
 import org.codehaus.groovy.grails.plugins.support.aware.GrailsApplicationAware
 import org.springframework.web.context.request.RequestAttributes
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.servlet.ModelAndView
 
+import com.linkedin.grails.profiler.ProfilerAppender
+import com.linkedin.grails.profiler.ProfilerFilter
+import com.linkedin.grails.profiler.ProfilerHandlerInterceptor
+
 class MiniProfilerAppender implements ProfilerAppender, GrailsApplicationAware {
 
     ProfilerProvider profilerProvider
     GrailsApplication grailsApplication
 
-    @Override
     void logEntry(String label, Class<?> clazz, String name, long entryTime) {
         if (clazz == ProfilerFilter) return // ignore this
         MiniProfiler profiler = profilerProvider.currentProfiler
@@ -29,7 +29,6 @@ class MiniProfilerAppender implements ProfilerAppender, GrailsApplicationAware {
         }
     }
 
-    @Override
     void logExit(String label, Class<?> clazz, String name, long exitTime) {
         MiniProfiler profiler = profilerProvider.currentProfiler
         if (profiler) {
@@ -54,13 +53,12 @@ class MiniProfilerAppender implements ProfilerAppender, GrailsApplicationAware {
         }
         // get rid of cglib crap, this should probably be done in the profiler plugin directly
         if(clazz.getName().contains('$$EnhancerByCGLIB')) {
-            clazz = clazz.getSuperclass();
+            clazz = clazz.getSuperclass()
         }
         "${clazz.simpleName}.$name"
     }
 
-    @Override
     void setGrailsApplication(GrailsApplication grailsApplication) {
-        this.grailsApplication = grailsApplication;
+        this.grailsApplication = grailsApplication
     }
 }

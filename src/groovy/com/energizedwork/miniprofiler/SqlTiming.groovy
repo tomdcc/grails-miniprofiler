@@ -1,18 +1,19 @@
 package com.energizedwork.miniprofiler
 
 import org.hibernate.jdbc.util.BasicFormatterImpl
+import org.hibernate.jdbc.util.Formatter
 
 class SqlTiming implements Serializable {
     /// <summary>
     /// Unique identifier for this SqlTiming.
     /// </summary>
-    public UUID id
+    UUID id
 
     /// <summary>
     /// Category of sql statement executed.
     /// </summary>
     // TODO: implement execute type
-//    public ExecuteType ExecuteType { get; set; }
+//    ExecuteType ExecuteType { get; set; }
 
     /// <summary>
     /// The sql that was executed.
@@ -23,27 +24,27 @@ class SqlTiming implements Serializable {
     long startMilliseconds
     long durationMilliseconds
     MiniProfiler profiler
+    private Formatter formatter = new BasicFormatterImpl()
 
-
-    public SqlTiming(String sql, MiniProfiler profiler)
+    SqlTiming(String sql, MiniProfiler profiler)
     {
+
         id = UUID.randomUUID()
 
         commandString = sql
 
         // TODO: stack traces?
 //        if (!MiniProfiler.Settings.ExcludeStackTraceSnippetFromSqlTimings)
-//            StackTraceSnippet = Helpers.StackTraceSnippet.Get();
+//            StackTraceSnippet = Helpers.StackTraceSnippet.Get()
 
-        this.profiler = profiler;
+        this.profiler = profiler
         startMilliseconds = System.currentTimeMillis() - profiler.started.time
     }
-
 
     def toJSON() {
         [
             Id: id.toString(),
-            FormattedCommandString: new BasicFormatterImpl().format(commandString),
+            FormattedCommandString: formatter.format(commandString),
             ParentTimingName: parentTiming.name,
             ParentTimingId: parentTiming.id.toString(),
             StartMilliseconds: startMilliseconds,

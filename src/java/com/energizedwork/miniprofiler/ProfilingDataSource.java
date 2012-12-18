@@ -8,6 +8,7 @@ import java.sql.SQLException;
 
 public class ProfilingDataSource extends DelegatingDataSource {
 
+    @Override
     public Connection getConnection() throws SQLException {
         Connection conn = super.getConnection();
         return new ConnectionSpy(conn);

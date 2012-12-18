@@ -15,7 +15,6 @@ public class ProfilingGrailsDecoratorSelector implements DecoratorSelector {
         this.miniProfiler = miniProfiler;
     }
 
-    @Override
     public Decorator selectDecorator(Content content, SiteMeshContext siteMeshContext) {
         return new ProfilingDecorator(wrapped.selectDecorator(content, siteMeshContext), miniProfiler);
     }

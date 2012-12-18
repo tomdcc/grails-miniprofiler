@@ -4,3 +4,6 @@
 *.iml
 .idea/
 target/
+plugin.xml
+web-app/WEB-INF
+grails-miniprofiler-*.zip

@@ -1,11 +1,9 @@
 package com.energizedwork.miniprofiler;
 
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
+import java.util.Locale;
+
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
-
-import java.util.Locale;
 
 public class ProfilingGrailsViewResolver implements ViewResolver {
 

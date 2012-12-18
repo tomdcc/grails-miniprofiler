@@ -1,13 +1,13 @@
-import com.energizedwork.miniprofiler.MiniProfiler
+package com.energizedwork.miniprofiler
 
 class MiniProfilerTagLib {
 
     static namespace = "miniprofiler"
 
-	def bufferedAppender
-	def grailsApplication
-	def pluginManager
-	def profilerProvider
+    def bufferedAppender
+    def grailsApplication
+    def pluginManager
+    def profilerProvider
 
     def javascript = { attrs ->
         MiniProfiler profiler = profilerProvider.current
@@ -36,6 +36,5 @@ class MiniProfilerTagLib {
         def useExistingjQuery = false
 
         out << """<script async type="text/javascript" id="mini-profiler" src="${path}includes.js?v=${version}" data-version="${version}" data-path="${path}" data-current-id="${currentId}" data-ids="${ids}" data-position="${position}" data-trivial="${showTrivial}" data-children="${showChildren}" data-max-traces="${maxTracesToShow}" data-controls="${showControls}" data-authorized="${authorized}"></script>"""
-
     }
 }

@@ -1,3 +1,12 @@
+import java.lang.reflect.Field
+import java.lang.reflect.Modifier
+
+import net.sf.ehcache.store.MemoryStoreEvictionPolicy
+import net.sf.log4jdbc.SpyLogFactory
+
+import org.codehaus.groovy.grails.commons.spring.BeanConfiguration
+import org.springframework.cache.ehcache.EhCacheFactoryBean
+
 import com.energizedwork.miniprofiler.MiniProfilerAppender
 import com.energizedwork.miniprofiler.MiniProfilerFilter
 import com.energizedwork.miniprofiler.MiniprofilerCondition
@@ -7,36 +16,25 @@ import com.energizedwork.miniprofiler.ProfilingDataSource
 import com.energizedwork.miniprofiler.ProfilingGrailsViewResolver
 import com.energizedwork.miniprofiler.ProfilingSpyLogDelegator
 import com.energizedwork.miniprofiler.ServletRequestProfilerProvider
-import net.sf.ehcache.store.MemoryStoreEvictionPolicy
-import net.sf.log4jdbc.SpyLogFactory
-import org.codehaus.groovy.grails.commons.spring.BeanConfiguration
-import org.springframework.cache.ehcache.EhCacheFactoryBean
-
-import java.lang.reflect.Field
-import java.lang.reflect.Modifier
 
 class MiniprofilerGrailsPlugin {
     def version = "0.1"
-    def grailsVersion = "1.3.9 > *"
-    def dependsOn = [:]
-    def pluginExcludes = [
-            "grails-app/views/error.gsp"
-    ]
+    def grailsVersion = "1.3 > *"
 
     def loadAfter = ['profiler'] // as we want to modify a couple of things that it creates
 
     def author = "Tom Dunstan"
     def authorEmail = "grails@tomd.cc"
-    def title = "Mini Profiler plugin for grails"
-    def description = '''\\
-Shows timing and sql query information in a head-up display in a grails web page, useful for debugging
+    def title = "Mini Profiler plugin"
+    def description = '''\
+Shows timing and sql query information in a head-up display in a web page, useful for debugging
 database and other performance problems.
 '''
-
-    // URL to the plugin's documentation
     def documentation = "http://grails.org/plugin/miniprofiler"
-    def scm = [url: 'https://github.com/tomdcc/grails-miniprofiler']
 
+    def license = 'APACHE'
+    def scm = [url: 'https://github.com/tomdcc/grails-miniprofiler']
+    def issueManagement = [system: 'Github', url: 'https://github.com/tomdcc/grails-miniprofiler/issues']
 
     // place right on the outside
     def getWebXmlFilterOrder() {
@@ -92,7 +90,7 @@ database and other performance problems.
         springConfig.addBeanConfiguration("dataSourceOriginal", dataSourceConfig)
 
         dataSource(ProfilingDataSource) {
-            targetDataSource = dataSourceOriginal
+            targetDataSource = ref('dataSourceOriginal')
         }
 
         profilingCache(EhCacheFactoryBean) {
@@ -106,32 +104,30 @@ database and other performance problems.
         }
 
         profilerProvider(ServletRequestProfilerProvider) {
-            cache = profilingCache
+            cache = ref('profilingCache')
         }
 
         miniProfilerAppender(MiniProfilerAppender) {
-            profilerProvider = profilerProvider
+            profilerProvider = ref('profilerProvider')
         }
 
         BeanConfiguration viewResolverConfig = springConfig.getBeanConfig('jspViewResolver')
         springConfig.addBeanConfiguration("jspViewResolverOriginal", viewResolverConfig)
 
         jspViewResolver(ProfilingGrailsViewResolver) {
-            wrapped = jspViewResolverOriginal
+            wrapped = ref('jspViewResolverOriginal')
         }
-
     }
 
     private void setuplLog4JdbcLogger(ProfilerProvider profilerProvider) {
         // work around hardcoded delegator in log4jdbc, this probably won't work if you're running under
         // a SecurityManager
         Field field = SpyLogFactory.getDeclaredField('logger')
-        field.setAccessible(true);
-        Field modifiersField = Field.class.getDeclaredField("modifiers");
-        modifiersField.setAccessible(true);
-        modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+        field.setAccessible(true)
+        Field modifiersField = Field.getDeclaredField("modifiers")
+        modifiersField.setAccessible(true)
+        modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL)
         field.set(null, profilerProvider ? new ProfilingSpyLogDelegator(profilerProvider) : new NullSpyLogDelegator())
-
     }
 
     def doWithApplicationContext = { applicationContext ->
@@ -139,5 +135,4 @@ database and other performance problems.
         // only send profiler data to miniprofiler, don't log to file etc
         applicationContext.profilerLog.appenderNames = ['miniProfilerAppender']
     }
-
 }
