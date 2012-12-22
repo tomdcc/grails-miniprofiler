@@ -1,3 +1,5 @@
+import groovy.util.slurpersupport.GPathResult
+
 import java.lang.reflect.Field
 import java.lang.reflect.Modifier
 
@@ -13,7 +15,6 @@ import com.energizedwork.miniprofiler.MiniprofilerCondition
 import com.energizedwork.miniprofiler.NullSpyLogDelegator
 import com.energizedwork.miniprofiler.ProfilerProvider
 import com.energizedwork.miniprofiler.ProfilingDataSource
-import com.energizedwork.miniprofiler.ProfilingGrailsViewResolver
 import com.energizedwork.miniprofiler.ProfilingSpyLogDelegator
 import com.energizedwork.miniprofiler.ServletRequestProfilerProvider
 
@@ -65,11 +66,14 @@ database and other performance problems.
 
         // now the fun part - override the grails page filter with one which profiles layout rendering
         def pageFilterMapping = webXml.'filter'.find { it.'filter-name'.text() == 'sitemesh' }
-        pageFilterMapping.'filter-class'[0] = 'com.energizedwork.miniprofiler.ProfilingGrailsPageFilter'
+        def filterClassNode = pageFilterMapping.'filter-class'[0]
+        def newFilterClass = 'com.energizedwork.miniprofiler.ProfilingGrailsPageFilter'
+        if (filterClassNode instanceof GPathResult) {
+            filterClassNode.replaceBody(newFilterClass)
+        } else {
+            filterClassNode.setTextContent(newFilterClass)
+        }
 
-        // and override the gsp servlet so we can see specific gsp timings
-        def gspServlet = webXml.'servlet'.find { it.'servlet-name'.text() == 'gsp' }
-        gspServlet.'servlet-class'[0] = 'com.energizedwork.miniprofiler.ProfilingGroovyPagesServlet'
     }
 
     private boolean isProfilingDisabled(application) {
@@ -111,12 +115,15 @@ database and other performance problems.
             profilerProvider = ref('profilerProvider')
         }
 
-        BeanConfiguration viewResolverConfig = springConfig.getBeanConfig('jspViewResolver')
-        springConfig.addBeanConfiguration("jspViewResolverOriginal", viewResolverConfig)
+        // commented out for now since this isn't working reliably yet
+        // just trying to get the gsp names
 
-        jspViewResolver(ProfilingGrailsViewResolver) {
-            wrapped = ref('jspViewResolverOriginal')
-        }
+//        BeanConfiguration viewResolverConfig = springConfig.getBeanConfig('jspViewResolver')
+//        springConfig.addBeanConfiguration("jspViewResolverOriginal", viewResolverConfig)
+//
+//        jspViewResolver(ProfilingGrailsViewResolver) {
+//            wrapped = ref('jspViewResolverOriginal')
+//        }
     }
 
     private void setuplLog4JdbcLogger(ProfilerProvider profilerProvider) {
