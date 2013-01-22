@@ -138,6 +138,8 @@ database and other performance problems.
     }
 
     def doWithApplicationContext = { applicationContext ->
+        if (isProfilingDisabled(application)) return
+
         setuplLog4JdbcLogger(applicationContext.profilerProvider)
         // only send profiler data to miniprofiler, don't log to file etc
         applicationContext.profilerLog.appenderNames = ['miniProfilerAppender']
