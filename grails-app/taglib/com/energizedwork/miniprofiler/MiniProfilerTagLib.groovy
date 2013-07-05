@@ -10,7 +10,7 @@ class MiniProfilerTagLib {
     def profilerProvider
 
     def javascript = { attrs ->
-        MiniProfiler profiler = profilerProvider.current
+        MiniProfiler profiler = profilerProvider?.current
         if (!profiler) return
 
         def path = g.resource(dir: 'js', plugin: 'miniprofiler') + '/'
