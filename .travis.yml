@@ -6,7 +6,7 @@ branches:
   - master
 script: ./grailsw refresh-dependencies
   && ./grailsw package-plugin
-  && ./grails release-plugin --no-scm
+  && ./grailsw release-plugin --no-scm
 env:
   global:
   - secure: SIb7gGVqKbdIrgv/p9+upyqTIR6mJLP4Hq9vEm8j+YIBFe6PINqULfg2LBK7hPpsY5fXEvARvlrCsR5Z8iSA9ygy+LrVjxecwRfaPQPi+obEQ1lFalyBnno6x8EIu4H/bzTXoEHUNv6vGBUOjAZWU7UF96QVkcRuElZgl2K1QAw=
