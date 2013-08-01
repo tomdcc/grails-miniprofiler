@@ -23,9 +23,5 @@ grails.project.dependency.resolution = {
     }
 }
 
-println "build config: " + System.getenv("GRAILS_CENTRAL_USERNAME")
 grails.project.repos.grailsCentral.username = System.getenv("GRAILS_CENTRAL_USERNAME")
 grails.project.repos.grailsCentral.password = System.getenv("GRAILS_CENTRAL_PASSWORD")
-
-println "build config: set variable = $grails.project.repos.grailsCentral.username"
-println "build config: set variable = $grails.project.repos.grailsCentral.password"
