@@ -4,9 +4,11 @@ jdk:
 branches:
   only:
   - master
-script: ./grailsw refresh-dependencies
-  && ./grailsw package-plugin
-  && ./grailsw publish-plugin --no-scm
+# if we run on the same box as previous build, make sure target is clean
+before_script: rm -rf target
+script: ./grailsw refresh-dependencies --non-interactive
+  && ./grailsw package-plugin --non-interactive
+  && ./grailsw publish-plugin --no-scm --allow-overwrite --non-interactive
 env:
   global:
   - secure: SIb7gGVqKbdIrgv/p9+upyqTIR6mJLP4Hq9vEm8j+YIBFe6PINqULfg2LBK7hPpsY5fXEvARvlrCsR5Z8iSA9ygy+LrVjxecwRfaPQPi+obEQ1lFalyBnno6x8EIu4H/bzTXoEHUNv6vGBUOjAZWU7UF96QVkcRuElZgl2K1QAw=
