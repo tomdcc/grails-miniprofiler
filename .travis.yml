@@ -1,0 +1,13 @@
+language: groovy
+jdk:
+- oraclejdk6
+branches:
+  only:
+  - master
+script: ./grailsw refresh-dependencies
+  && ./grailsw package-plugin
+  && ./grails release-plugin --no-scm
+env:
+  global:
+  - secure: SIb7gGVqKbdIrgv/p9+upyqTIR6mJLP4Hq9vEm8j+YIBFe6PINqULfg2LBK7hPpsY5fXEvARvlrCsR5Z8iSA9ygy+LrVjxecwRfaPQPi+obEQ1lFalyBnno6x8EIu4H/bzTXoEHUNv6vGBUOjAZWU7UF96QVkcRuElZgl2K1QAw=
+  - secure: jLwEWFVaQwL/Lwk3eS+I3yNg1ze6Fck8uqIFkhycdV42BlDGxOx/hw0vzLdkewh87rzSDTwLdYjnbuJFEKvbgc0idRC3wuFIkK9NL0QBe+U6jqlSOUSAJE86+6cTotn6ZZHrews/fwOejINo/PAMlbBKe0xfzmYhygGawUKmH8g=
