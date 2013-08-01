@@ -19,7 +19,7 @@ import com.energizedwork.miniprofiler.ProfilingSpyLogDelegator
 import com.energizedwork.miniprofiler.ServletRequestProfilerProvider
 
 class MiniprofilerGrailsPlugin {
-    def version = "0.1"
+    def version = "0.2-SNAPSHOT"
     def grailsVersion = "1.3 > *"
 
     def loadAfter = ['profiler'] // as we want to modify a couple of things that it creates
