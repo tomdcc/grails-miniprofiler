@@ -1,5 +1,5 @@
-Grails Gson plugin
-------------------
+Grails Miniprofiler plugin
+--------------------------
 
 [![Build Status](https://travis-ci.org/tomdcc/grails-miniprofiler.png)][1]
 
