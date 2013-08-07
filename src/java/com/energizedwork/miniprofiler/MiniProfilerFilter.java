@@ -32,6 +32,7 @@ public class MiniProfilerFilter extends OncePerRequestFilter {
         try {
             if(condition != null && condition.doProfiling()) {
                 miniProfiler = profilerProvider.start(ProfileLevel.Info);
+                httpServletResponse.addHeader("X-MiniProfiler-Ids", "[\"" + miniProfiler.getId().toString() + "\"]");
             }
             filterChain.doFilter(httpServletRequest, httpServletResponse);
         } finally {

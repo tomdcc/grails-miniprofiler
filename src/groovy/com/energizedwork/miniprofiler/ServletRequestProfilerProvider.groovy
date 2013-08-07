@@ -23,13 +23,7 @@ class ServletRequestProfilerProvider implements ProfilerProvider, ServletContext
 
         HttpServletRequest request = attrs.request
 
-        // ignore ajax calls for now
-        if (request.xhr) {
-            return null
-        }
-
         String url = request.requestURL
-//        println 'got here'
 
         // TODO: ignore scripts etc
 //        def path = request.requestURI // TODO: make the real path?
