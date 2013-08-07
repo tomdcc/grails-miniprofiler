@@ -11,6 +11,7 @@ Installation
 ============
 
 This plugin also requires the Profiler Plugin to be installed:
+
     plugins {
         // etc
         runtime ':profiler:0.4'
