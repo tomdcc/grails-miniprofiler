@@ -11,6 +11,11 @@ grails.project.dependency.resolution = {
 
     repositories {
         grailsCentral()
+        mavenCentral()
+    }
+
+    dependencies {
+        compile 'com.googlecode.log4jdbc:log4jdbc:1.2'
     }
 
     plugins {
