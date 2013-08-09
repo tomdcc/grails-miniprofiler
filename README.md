@@ -14,9 +14,11 @@ This plugin also requires the Profiler Plugin to be installed:
 
     plugins {
         // etc
-        runtime ':profiler:0.4'
+        runtime ':profiler:0.4.1'
         runtime ':miniprofiler:0.1'
     }
+
+NOTE: at time of writing the currently released profiler plugin (0.4) has bugs with Grails 2.2+. Until an updated version is released, you'll need to grab it from source at [GitHub][6] and either install it locally using `grails maven-install` or deploy it to a local maven repo if you have one of those.
 
 You should then add the following to the bottom of any layouts that you would like to see the profiling information on, just inside the bottom of the html body:
 
@@ -54,3 +56,4 @@ Changelog
 [3]:http://grails.org/plugin/profiler
 [4]:https://code.google.com/p/log4jdbc/
 [5]:http://skillsmatter.com/podcast/groovy-grails/debugging-grails-database-performance/te-6299
+[6]:https://github.com/pledbrook/grails-profiler
