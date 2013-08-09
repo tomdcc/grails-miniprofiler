@@ -18,7 +18,7 @@ This plugin also requires the Profiler Plugin to be installed:
         runtime ':miniprofiler:0.1'
     }
 
-NOTE: at time of writing the currently released profiler plugin (0.4) has bugs with Grails 2.2+. Until an updated version is released, you'll need to grab it from source at [GitHub][6] and either install it locally using `grails maven-install` or deploy it to a local maven repo if you have one of those.
+NOTE: at time of writing the currently released profiler plugin (0.4) has bugs with Grails 2.2+. Until an updated version is released, you'll need to grab it from source at [GitHub][6] and either install it locally using `grails package-plugin` followed by `grails install-plugin /path/to/grails-profiler/grails-profiler-0.4.1.zip` or deploy it to a local maven repo if you have one of those.
 
 You should then add the following to the bottom of any layouts that you would like to see the profiling information on, just inside the bottom of the html body:
 
