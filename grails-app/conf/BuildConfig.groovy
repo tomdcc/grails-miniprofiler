@@ -12,10 +12,16 @@ grails.project.dependency.resolution = {
     repositories {
         grailsCentral()
         mavenCentral()
+
+		if(System.getenv("MINIPROFILER_CI") == 'true' && appVersion.endsWith("-SNAPSHOT")) {
+			println "Using Sonatype OSS snapshot repository. If you are reading this anywhere other than the miniprofiler plugin travis CI build, something probably went wrong"
+			// here to allow testing against snapshot miniprofiler code
+			mavenRepo 'https://oss.sonatype.org/content/repositories/snapshots'
+		}
     }
 
     dependencies {
-        compile 'com.googlecode.log4jdbc:log4jdbc:1.2'
+        compile "io.jdev.miniprofiler:miniprofiler-core:0.3-SNAPSHOT"
     }
 
     plugins {
@@ -23,8 +29,9 @@ grails.project.dependency.resolution = {
             export = false
         }
 
-        runtime ":hibernate:$grailsVersion"
-        compile ':profiler:0.4'
+        compile(':profiler:0.5') {
+			export = false
+		}
     }
 }
 

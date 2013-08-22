@@ -1,22 +1,16 @@
+import grails.util.Environment
 import groovy.util.slurpersupport.GPathResult
-
-import java.lang.reflect.Field
-import java.lang.reflect.Modifier
-
+import io.jdev.miniprofiler.DefaultProfilerProvider
+import io.jdev.miniprofiler.MiniProfiler
+import io.jdev.miniprofiler.servlet.ProfilingFilter
+import io.jdev.miniprofiler.sql.ProfilingDataSource
+import io.jdev.miniprofiler.storage.EhcacheStorage
 import net.sf.ehcache.store.MemoryStoreEvictionPolicy
-import net.sf.log4jdbc.SpyLogFactory
-
 import org.codehaus.groovy.grails.commons.spring.BeanConfiguration
-import org.springframework.cache.ehcache.EhCacheFactoryBean
 
-import com.energizedwork.miniprofiler.MiniProfilerAppender
-import com.energizedwork.miniprofiler.MiniProfilerFilter
-import com.energizedwork.miniprofiler.MiniprofilerCondition
-import com.energizedwork.miniprofiler.NullSpyLogDelegator
-import com.energizedwork.miniprofiler.ProfilerProvider
-import com.energizedwork.miniprofiler.ProfilingDataSource
-import com.energizedwork.miniprofiler.ProfilingSpyLogDelegator
-import com.energizedwork.miniprofiler.ServletRequestProfilerProvider
+import grails.plugin.miniprofiler.profilerplugin.MiniProfilerAppender
+import grails.plugin.miniprofiler.profilerplugin.MiniprofilerCondition
+import org.springframework.cache.ehcache.EhCacheFactoryBean
 
 class MiniprofilerGrailsPlugin {
     def version = "0.3-SNAPSHOT"
@@ -51,7 +45,7 @@ database and other performance problems.
         filterDef[filterDef.size() - 1] + {
             'filter' {
                 'filter-name'('miniProfilerFilter')
-                'filter-class'(MiniProfilerFilter.name)
+                'filter-class'(ProfilingFilter.name)
             }
         }
 
@@ -67,7 +61,7 @@ database and other performance problems.
         // now the fun part - override the grails page filter with one which profiles layout rendering
         def pageFilterMapping = webXml.'filter'.find { it.'filter-name'.text() == 'sitemesh' }
         def filterClassNode = pageFilterMapping.'filter-class'[0]
-        def newFilterClass = 'com.energizedwork.miniprofiler.ProfilingGrailsPageFilter'
+        def newFilterClass = 'grails.plugin.miniprofiler.sitemesh.ProfilingGrailsPageFilter'
         if (filterClassNode instanceof GPathResult) {
             filterClassNode.replaceBody(newFilterClass)
         } else {
@@ -83,63 +77,54 @@ database and other performance problems.
     def doWithSpring = {
         if (isProfilingDisabled(application)) return
 
-        // make log4jdbc not spam the logs while we're starting up and don't have the real log catcher ready yet
-        setuplLog4JdbcLogger(null)
+		// use an in-memory ehcache by default
+		profilingCache(EhCacheFactoryBean) {
+			cacheName = 'miniprofilerCache'
+			maxElementsInMemory = 1000
+			maxElementsOnDisk = 0
+			memoryStoreEvictionPolicy = MemoryStoreEvictionPolicy.LRU
+			overflowToDisk = false
+			eternal = false
+			timeToLive = 3600
+		}
+		profilerStorage(EhcacheStorage, profilingCache)
 
-        // just switch profiling on for all requests by default
-        profilerCondition(MiniprofilerCondition)
+		// main profiler provider
+		profilerProvider(DefaultProfilerProvider) {
+			storage = profilerStorage
+		}
 
-        // replace data source with our proxying one
+		// replace data source with our proxying one, if it's there
         BeanConfiguration dataSourceConfig = springConfig.getBeanConfig('dataSource')
-        springConfig.addBeanConfiguration("dataSourceOriginal", dataSourceConfig)
+		if(dataSourceConfig) {
+			springConfig.addBeanConfiguration("dataSourceOriginal", dataSourceConfig)
+			dataSource(ProfilingDataSource, ref('dataSourceOriginal'), profilerProvider)
+		}
 
-        dataSource(ProfilingDataSource) {
-            targetDataSource = ref('dataSourceOriginal')
-        }
+		// profiler plugin related stuff below
 
-        profilingCache(EhCacheFactoryBean) {
-            cacheName = 'miniprofilerCache'
-            maxElementsInMemory = 1000
-            maxElementsOnDisk = 0
-            memoryStoreEvictionPolicy = MemoryStoreEvictionPolicy.LRU
-            overflowToDisk = false
-            eternal = false
-            timeToLive = 3600
-        }
+		// just switch profiling on for all requests by default
+		profilerCondition(MiniprofilerCondition)
 
-        profilerProvider(ServletRequestProfilerProvider) {
-            cache = ref('profilingCache')
-        }
-
-        miniProfilerAppender(MiniProfilerAppender) {
+		// set up our profiler appender to capture output from the profiler
+		// plugin and pipe it through a mini profiler session instead
+		miniProfilerAppender(MiniProfilerAppender) {
             profilerProvider = ref('profilerProvider')
         }
 
-        // commented out for now since this isn't working reliably yet
-        // just trying to get the gsp names
-
-//        BeanConfiguration viewResolverConfig = springConfig.getBeanConfig('jspViewResolver')
-//        springConfig.addBeanConfiguration("jspViewResolverOriginal", viewResolverConfig)
-//
-//        jspViewResolver(ProfilingGrailsViewResolver) {
-//            wrapped = ref('jspViewResolverOriginal')
-//        }
-    }
-
-    private void setuplLog4JdbcLogger(ProfilerProvider profilerProvider) {
-        // work around hardcoded delegator in log4jdbc, this probably won't work if you're running under
-        // a SecurityManager
-        Field field = SpyLogFactory.getDeclaredField('logger')
-        field.setAccessible(true)
-        Field modifiersField = Field.getDeclaredField("modifiers")
-        modifiersField.setAccessible(true)
-        modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL)
-        field.set(null, profilerProvider ? new ProfilingSpyLogDelegator(profilerProvider) : new NullSpyLogDelegator())
     }
 
     def doWithApplicationContext = { applicationContext ->
         if (isProfilingDisabled(application)) return
-        setuplLog4JdbcLogger(applicationContext.profilerProvider)
+
+		def profilerProvider = applicationContext.profilerProvider
+
+		// make available in static contexts, just in case someone needs it
+		MiniProfiler.profilerProvider = profilerProvider
+
+		// set name to have grails env name as well
+		profilerProvider.machineName = "$profilerProvider.machineName($Environment.current.name)"
+
         // only send profiler data to miniprofiler, don't log to file etc
         applicationContext.profilerLog.appenderNames = ['miniProfilerAppender']
     }

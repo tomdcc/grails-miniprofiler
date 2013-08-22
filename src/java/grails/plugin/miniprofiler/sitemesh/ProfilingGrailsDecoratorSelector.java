@@ -1,21 +1,22 @@
-package com.energizedwork.miniprofiler;
+package grails.plugin.miniprofiler.sitemesh;
 
 import com.opensymphony.sitemesh.Content;
 import com.opensymphony.sitemesh.Decorator;
 import com.opensymphony.sitemesh.DecoratorSelector;
 import com.opensymphony.sitemesh.SiteMeshContext;
+import io.jdev.miniprofiler.Profiler;
 
 public class ProfilingGrailsDecoratorSelector implements DecoratorSelector {
 
     private DecoratorSelector wrapped;
-    private MiniProfiler miniProfiler;
+    private Profiler profiler;
 
-    public ProfilingGrailsDecoratorSelector(DecoratorSelector wrapped, MiniProfiler miniProfiler) {
+    public ProfilingGrailsDecoratorSelector(DecoratorSelector wrapped, Profiler profiler) {
         this.wrapped = wrapped;
-        this.miniProfiler = miniProfiler;
+        this.profiler = profiler;
     }
 
     public Decorator selectDecorator(Content content, SiteMeshContext siteMeshContext) {
-        return new ProfilingDecorator(wrapped.selectDecorator(content, siteMeshContext), miniProfiler);
+        return new ProfilingDecorator(wrapped.selectDecorator(content, siteMeshContext), profiler);
     }
 }

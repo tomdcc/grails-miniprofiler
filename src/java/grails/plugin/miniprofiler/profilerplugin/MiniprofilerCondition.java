@@ -1,4 +1,4 @@
-package com.energizedwork.miniprofiler;
+package grails.plugin.miniprofiler.profilerplugin;
 
 import com.linkedin.grails.profiler.ProfilerCondition;
 
