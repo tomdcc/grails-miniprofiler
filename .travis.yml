@@ -11,5 +11,6 @@ script: ./grailsw refresh-dependencies --non-interactive
   && ./grailsw publish-plugin --no-scm --allow-overwrite --non-interactive
 env:
   global:
+  - MINIPROFILER_CI=true
   - secure: SIb7gGVqKbdIrgv/p9+upyqTIR6mJLP4Hq9vEm8j+YIBFe6PINqULfg2LBK7hPpsY5fXEvARvlrCsR5Z8iSA9ygy+LrVjxecwRfaPQPi+obEQ1lFalyBnno6x8EIu4H/bzTXoEHUNv6vGBUOjAZWU7UF96QVkcRuElZgl2K1QAw=
   - secure: pkpvPILCGyjp8TPjZOZWnxZqCIhOZDwRk6YI7lCspdQFqrEKYVAa/q+FNlVJAr4c2atzfVnBmVoh4UvZAVTlw8QnNjswOrWfEcq7v0pvqkSMiaML+Vs+W42jFo/R4cwhluXAHyfj9K9feXI22zbPpN1UaaypgDZZvZaep28vx9o=
