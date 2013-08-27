@@ -44,6 +44,10 @@ This is very early code, all bug reports and suggestions very welcome!
 Changelog
 ---------
 
+### 0.3 ###
+ - Split core functionality into miniprofiler-jvm project
+ - Fix several bugs, including layout timing on Grails 2.2.x
+
 ### 0.2 ###
  - Profile AJAX requests
  - Use log4jdbc from Maven Central, now that it's published there
