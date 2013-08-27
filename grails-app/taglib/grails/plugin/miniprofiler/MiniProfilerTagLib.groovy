@@ -7,8 +7,11 @@ class MiniProfilerTagLib {
     static namespace = "miniprofiler"
 
     def profilerProvider
+    def grailsApplication
 
     def javascript = { attrs ->
-        out << new ScriptTagWriter().printScriptTag(profilerProvider.currentProfiler, "$request.contextPath/miniprofiler")
+		if(!grailsApplication.config.grails?.profiler?.disable) {
+			out << new ScriptTagWriter().printScriptTag(profilerProvider.currentProfiler, "$request.contextPath/miniprofiler")
+		}
     }
 }
