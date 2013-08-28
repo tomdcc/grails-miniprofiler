@@ -12,6 +12,7 @@ before_script: rm -rf target
 script: cd test/projects/test22
   && ./grailsw refresh-dependencies --non-interactive
   && ./grailsw test-app --non-interactive
+  && ./grailsw -Dgrails.profiler.disable=true test-app --non-interactive
   && cd ../../..
   && ./grailsw refresh-dependencies --non-interactive
   && ./grailsw package-plugin --non-interactive
