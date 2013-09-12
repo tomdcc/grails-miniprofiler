@@ -60,14 +60,15 @@ database and other performance problems.
 
         // now the fun part - override the grails page filter with one which profiles layout rendering
         def pageFilterMapping = webXml.'filter'.find { it.'filter-name'.text() == 'sitemesh' }
-        def filterClassNode = pageFilterMapping.'filter-class'[0]
-        def newFilterClass = 'grails.plugin.miniprofiler.sitemesh.ProfilingGrailsPageFilter'
-        if (filterClassNode instanceof GPathResult) {
-            filterClassNode.replaceBody(newFilterClass)
-        } else {
-            filterClassNode.setTextContent(newFilterClass)
-        }
-
+		if(pageFilterMapping) { // only do this if we can find sitemesh - someone may have removed it
+			def filterClassNode = pageFilterMapping.'filter-class'[0]
+			def newFilterClass = 'grails.plugin.miniprofiler.sitemesh.ProfilingGrailsPageFilter'
+			if (filterClassNode instanceof GPathResult) {
+				filterClassNode.replaceBody(newFilterClass)
+			} else {
+				filterClassNode.setTextContent(newFilterClass)
+			}
+		}
     }
 
     private boolean isProfilingDisabled(application) {
