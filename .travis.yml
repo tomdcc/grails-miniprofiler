@@ -4,17 +4,19 @@ jdk:
 branches:
   only:
   - master
-# if we run on the same box as previous build, make sure target is clean
 before_install:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
-before_script: rm -rf target
-script: cd test/projects/test22
+  # if we run on the same box as previous build, make sure target is clean
+  - "rm -rf target"
+install: ./grailsw refresh-dependencies --non-interactive
+  && cd test/projects/test22
   && ./grailsw refresh-dependencies --non-interactive
+  && cd ../../..
+script: cd test/projects/test22
   && ./grailsw test-app --non-interactive
   && ./grailsw -Dgrails.profiler.disable=true test-app --non-interactive
   && cd ../../..
-  && ./grailsw refresh-dependencies --non-interactive
   && ./grailsw package-plugin --non-interactive
   && ./grailsw publish-plugin --no-scm --allow-overwrite --non-interactive
 env:
