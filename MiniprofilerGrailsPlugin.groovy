@@ -95,13 +95,15 @@ database and other performance problems.
 			storage = profilerStorage
 		}
 
-		// replace data source with our proxying one, if it's there
-        BeanConfiguration dataSourceConfig = springConfig.getBeanConfig('dataSource')
-		if(dataSourceConfig) {
-			springConfig.addBeanConfiguration("dataSourceOriginal", dataSourceConfig)
-			dataSource(ProfilingDataSource, ref('dataSourceOriginal'), profilerProvider)
-		}
-
+		// replace data sources with our proxying one, if it's there
+      List<String> dataSourceBeanNames = springConfig.getBeanNames().findAll { it.startsWith("dataSource") && it.indexOf("Unproxied") == -1}
+      dataSourceBeanNames.each { String dataSourceBeanName ->
+        BeanConfiguration dataSourceConfiguration = springConfig.getBeanConfig(dataSourceBeanName)
+        if (dataSourceConfiguration) {
+          springConfig.addBeanConfiguration("${dataSourceBeanName}_Original", dataSourceConfiguration)
+          "${dataSourceBeanName}"(ProfilingDataSource, ref("${dataSourceBeanName}_Original"), profilerProvider)
+        }
+      }
 		// profiler plugin related stuff below
 
 		// just switch profiling on for all requests by default
