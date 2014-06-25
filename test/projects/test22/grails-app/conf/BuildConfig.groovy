@@ -41,9 +41,9 @@ grails.project.dependency.resolution = {
     dependencies {
 		test "org.spockframework:spock-grails-support:0.7-groovy-2.0"
 		test "org.gebish:geb-spock:0.9.0"
-		test "org.seleniumhq.selenium:selenium-support:2.35.0"
-		test "org.seleniumhq.selenium:selenium-firefox-driver:2.35.0"
-		test "io.jdev.miniprofiler:miniprofiler-test-support:0.3"
+		test "org.seleniumhq.selenium:selenium-support:2.41.0"
+		test "org.seleniumhq.selenium:selenium-firefox-driver:2.41.0"
+		test "io.jdev.miniprofiler:miniprofiler-test-support:0.4"
     }
 
     plugins {
