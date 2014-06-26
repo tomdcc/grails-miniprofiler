@@ -17,7 +17,10 @@ script: cd test/projects/test22
   && ./grailsw test-app --non-interactive
   && ./grailsw -Dgrails.profiler.disable=true test-app --non-interactive
   && cd ../../..
-  && ./grailsw package-plugin --non-interactive
+  && cd test/projects/test23
+  && ./grailsw test-app --non-interactive
+  && ./grailsw -Dgrails.profiler.disable=true test-app --non-interactive
+  && cd ../../..  && ./grailsw package-plugin --non-interactive
   && ./grailsw publish-plugin --no-scm --allow-overwrite --non-interactive
 env:
   global:
