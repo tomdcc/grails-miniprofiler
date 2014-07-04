@@ -59,15 +59,23 @@ database and other performance problems.
         }
 
         // now the fun part - override the grails page filter with one which profiles layout rendering
-        def pageFilterMapping = webXml.'filter'.find { it.'filter-name'.text() == 'sitemesh' }
-		if(pageFilterMapping) { // only do this if we can find sitemesh - someone may have removed it
-			def filterClassNode = pageFilterMapping.'filter-class'[0]
-			def newFilterClass = 'grails.plugin.miniprofiler.sitemesh.ProfilingGrailsPageFilter'
-			if (filterClassNode instanceof GPathResult) {
-				filterClassNode.replaceBody(newFilterClass)
-			} else {
-				filterClassNode.setTextContent(newFilterClass)
+		try {
+			// this class exists in grails 2.0-2.3, and replacing it with our profiling one
+			// is how we measure how long a layout takes.
+			// no solution for grails 2.4 yet
+			Class.forName('org.codehaus.groovy.grails.web.sitemesh.GrailsPageFilter')
+			def pageFilterMapping = webXml.'filter'.find { it.'filter-name'.text() == 'sitemesh' }
+			if(pageFilterMapping) { // only do this if we can find sitemesh - someone may have removed it
+				def filterClassNode = pageFilterMapping.'filter-class'[0]
+				def newFilterClass = 'grails.plugin.miniprofiler.sitemesh.grails20.ProfilingGrailsPageFilter'
+				if (filterClassNode instanceof GPathResult) {
+					filterClassNode.replaceBody(newFilterClass)
+				} else {
+					filterClassNode.setTextContent(newFilterClass)
+				}
 			}
+		} catch(ClassNotFoundException e) {
+			// not grails 2.0-2.3, so don't try to replace it - we just won't have layout timing
 		}
     }
 
@@ -83,7 +91,7 @@ database and other performance problems.
 			cacheName = 'miniprofilerCache'
 			maxElementsInMemory = 1000
 			maxElementsOnDisk = 0
-			memoryStoreEvictionPolicy = MemoryStoreEvictionPolicy.LRU
+			memoryStoreEvictionPolicy = 'LRU'
 			overflowToDisk = false
 			eternal = false
 			timeToLive = 3600

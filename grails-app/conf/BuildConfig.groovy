@@ -12,6 +12,7 @@ grails.project.dependency.resolution = {
     repositories {
         grailsCentral()
         mavenCentral()
+        mavenLocal()
 
 		if(System.getenv("MINIPROFILER_CI") == 'true' && appVersion.endsWith("-SNAPSHOT")) {
 			println "Using Sonatype OSS snapshot repository. If you are reading this anywhere other than the miniprofiler plugin travis CI build, something probably went wrong"
@@ -21,7 +22,8 @@ grails.project.dependency.resolution = {
     }
 
     dependencies {
-        compile "io.jdev.miniprofiler:miniprofiler-core:0.4"
+        compile "io.jdev.miniprofiler:miniprofiler-core:0.4.1-SNAPSHOT"
+        compile "io.jdev.miniprofiler:miniprofiler-grails:0.4.1-SNAPSHOT"
     }
 
     plugins {
