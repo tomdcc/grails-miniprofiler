@@ -12,9 +12,9 @@ before_install:
 install: ./grailsw refresh-dependencies --non-interactive
   && cd test/projects/test22
   && ./grailsw refresh-dependencies --non-interactive
-  && cd test/projects/test23
+  && cd ../test23
   && ./grailsw refresh-dependencies --non-interactive
-  && cd test/projects/test24
+  && cd ../test24
   && ./grailsw refresh-dependencies --non-interactive
   && cd ../../..
 script: cd test/projects/test22
