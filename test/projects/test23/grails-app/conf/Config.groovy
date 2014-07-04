@@ -119,3 +119,7 @@ log4j = {
            'org.hibernate',
            'net.sf.ehcache.hibernate'
 }
+
+if(System.getProperty('grails.profiler.disable') != null) {
+	grails.profiler.disable = (System.getProperty('grails.profiler.disable') as boolean)
+}
