@@ -13,7 +13,7 @@ import grails.plugin.miniprofiler.profilerplugin.MiniprofilerCondition
 import org.springframework.cache.ehcache.EhCacheFactoryBean
 
 class MiniprofilerGrailsPlugin {
-    def version = "0.4.1-SNAPSHOT"
+    def version = "0.4.1"
     def grailsVersion = "1.3 > *"
 
     def loadAfter = ['profiler'] // as we want to modify a couple of things that it creates
