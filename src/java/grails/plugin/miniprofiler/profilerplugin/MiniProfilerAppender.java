@@ -56,7 +56,7 @@ public class MiniProfilerAppender implements ProfilerAppender, GrailsApplication
             return name;
         }
         // get rid of cglib munging, this should probably be done in the profiler plugin directly
-        if(clazz.getName().contains("$$EnhancerByCGLIB")) {
+        if(clazz.getName().matches(".*\\$\\$EnhancerBy.*CGLIB.*")) {
             clazz = clazz.getSuperclass();
         }
         return clazz.getSimpleName() + "." + name;
