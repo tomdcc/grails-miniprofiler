@@ -30,11 +30,11 @@ class MiniprofilerFunctionalSpec extends GebReportingSpec {
 
 		and: ''
 			def timings = result.popup.timings
-			timings.size() == 4
-			timings.label ==  ['/test22/book/list', 'BookController.list', 'View', 'Layout']
-			timings.indent == [0, 1, 1, 1]
-			[0, 2, 3].each { assert timings[it].queries.text() == null}
-			timings[1].queries.text() ==~ /\d+\.0 \(2\)/
+			timings.size() == 5
+			timings.label ==  ['/test22/book/list', 'Controller', 'BookService.findStuff', 'View - /index', 'Layout']
+			timings.indent == [0, 1, 2, 1, 1]
+			[0, 3, 4].each { assert timings[it].queries.text() == null}
+			[1, 2].each    { assert timings[it].queries.text() ==~ /\d+\.0 \(1\)/ }
 
 		when: 'click sql link'
 			timings[1].queries.click()

@@ -18,8 +18,7 @@ package grails.plugin.miniprofiler
 import io.jdev.miniprofiler.test.pages.MiniProfilerModule
 
 class BookListPage extends geb.Page {
-	static url = 'book/index'
-	static at = { title == 'Book List' }
+	static url = 'book/list'
 	static content = {
 		miniProfiler(required: false) { module MiniProfilerModule }
 	}

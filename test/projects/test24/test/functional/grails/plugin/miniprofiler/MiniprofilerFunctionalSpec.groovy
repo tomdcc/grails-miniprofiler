@@ -30,11 +30,11 @@ class MiniprofilerFunctionalSpec extends GebReportingSpec {
 		and: ''
 			// no layout timings for grails 2.4 yet
 			def timings = result.popup.timings
-			timings.size() == 3
-			timings.label ==  ['/test24/book/index', 'Controller', 'View - index']
-			timings.indent == [0, 1, 1]
-			[0, 2].each { assert timings[it].queries.text() == null}
-			timings[1].queries.text() ==~ /\d+\.0 \(2\)/
+			timings.size() == 4
+			timings.label ==  ['/test24/book/list', 'Controller', 'BookService.findStuff', 'View - /index']
+			timings.indent == [0, 1, 2, 1]
+			[0, 3].each { assert timings[it].queries.text() == null }
+			[1, 2].each { assert timings[it].queries.text() ==~ ~/\d+\.0 \(1\)/ }
 
 		when: 'click sql link'
 			timings[1].queries.click()

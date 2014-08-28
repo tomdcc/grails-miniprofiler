@@ -19,7 +19,6 @@ import io.jdev.miniprofiler.test.pages.MiniProfilerModule
 
 class BookListPage extends geb.Page {
 	static url = 'book/list'
-	static at = { title == 'Book List' }
 	static content = {
 		miniProfiler(required: false) { module MiniProfilerModule }
 	}
